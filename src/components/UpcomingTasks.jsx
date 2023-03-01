@@ -23,7 +23,7 @@ const UpcomingTasks = ({ handleOnEdit }) => {
                 <span className='flex items-center ml-auto text-[22px]'>
                   <span className='flex shadow-none px-2 bg-slate-200 rounded-lg mr-1'>
                     <MdAccessAlarms className=' text-teal-500 mr-1 text-lg' />
-                    <p className='  text-sm mr-1'>{item.time} | {item.data && item.date.slice(0, 10)}</p>
+                    <p className='  text-sm mr-1'>{item.time} | {item.date && item.date.slice(0, 10)}</p>
                   </span> <MdDeleteForever onClick={() => handleOnDelete(item._id)} className=" text-red-600 cursor-pointer" />
                   <MdDownloadDone onClick={() => handleOnComplete(item)} className='mx-1 cursor-pointer' />
                   <MdEditCalendar onClick={() => handleOnEdit(item._id, { name: item.name, date: item.date, time: item.time })} className=' text-orange-600 cursor-pointer' /></span></p>
