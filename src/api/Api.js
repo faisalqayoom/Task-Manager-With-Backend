@@ -10,7 +10,7 @@ axios.interceptors.response.use(config => {
 });
 
 
-//! GET SINGLE TASK  
+//! GET SINGLE TASK   
 
 export const getSingleTask = async (id) => {
   try {

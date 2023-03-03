@@ -12,13 +12,19 @@ export const TaskContext = createContext({
 const TaskProvider = ({ children }) => {
   const [task, setTask] = useState([])
 
+  const [loader, setLoader] = useState(false)
+
   useEffect(() => {
     const getAllTasks = async () => {
       try {
+        setLoader(true)
         const result = await getData()
         setTask([...result.data])
       } catch (error) {
         console.log(error.message)
+      }
+      finally {
+        setLoader(false)
       }
     }
     getAllTasks()
@@ -26,41 +32,50 @@ const TaskProvider = ({ children }) => {
 
 
   const handleOnAddTask = async (data) => {
-    if (!data.id) {
-      const taskData = { name: data.name, date: data.date, time: data.time, isCompleted: false }
-      const result = await postData(taskData);
-      setTask([result, ...task])
-      toast.success('Task Added Successfully!', {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-      console.log("Data is Added Successfully .....")
-    }
-    else {
-      const dataToUpdate = { name: data.name, date: data.date, time: data.time, isCompleted: false }
-      const updateItem = await updateTask(data.id, dataToUpdate);
+    try {
+      setLoader(true)
+      if (!data.id) {
+        const taskData = { name: data.name, date: data.date, time: data.time, isCompleted: false }
+        const result = await postData(taskData);
+        setTask([result, ...task])
+        toast.success('Task Added Successfully!', {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        console.log("Data is Added Successfully .....")
+      }
+      else {
+        const dataToUpdate = { name: data.name, date: data.date, time: data.time, isCompleted: false }
+        const updateItem = await updateTask(data.id, dataToUpdate);
 
-      const filtered = task.filter((item) => item._id !== updateItem.data._id)
-      setTask([updateItem.data, ...filtered])
-      toast.success('Task Updated Successfully!', {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-      console.log("Data is Updated Successfully .....")
+        const filtered = task.filter((item) => item._id !== updateItem.data._id)
+        setTask([updateItem.data, ...filtered])
+        toast.success('Task Updated Successfully!', {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        console.log("Data is Updated Successfully .....")
+      }
+    } catch (error) {
+      console.log("Failed to Submit ", error.message)
+    } finally {
+      setLoader(false)
     }
   }
+
+
 
   const handleOnDelete = async (id) => {
     Swal.fire({
@@ -110,7 +125,9 @@ const TaskProvider = ({ children }) => {
         handleOnAddTask,
         task,
         handleOnDelete,
-        handleOnComplete
+        handleOnComplete,
+        loader,
+        setLoader
       }}
     >,{children}
     </TaskContext.Provider >
